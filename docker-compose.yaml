@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: db_kinopoisk
+    env_file: 
+      - .env-non-dev
+    ports:
+      - 5432:5432 #если хочу подключаться к базе локально с компа 
+
+
+
+  kinopoisk:
+    image: kinopoisk_image
+    build:
+      context: .
+    container_name: kinopoisk_app
+    env_file:
+      - .env-non-dev
+    depends_on:
+      - db
+    command: ['/kinopoisk/docker/app.sh']
+    # command: gunicorn -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
+    ports:
+      - "7777:8000"
+
+
